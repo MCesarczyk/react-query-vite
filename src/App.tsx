@@ -1,19 +1,24 @@
-import './App.css'
-import { useQuery } from 'react-query'
+import { useQuery } from 'react-query';
+import './App.css';
+
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const fetchContributors = async () => {
+  await wait(1_000);
+
   const response = await fetch(
     "https://api.github.com/repos/tannerlinsley/react-query/contributors"
   );
+
   return await response.json();
 };
 
-function App() {
-  const { status, error, data } = useQuery("contributors", fetchContributors);
+export const App = () => {
+  const { isLoading, status, error, data } = useQuery("contributors", fetchContributors);
 
   const contributors = !data ? undefined : data as any[];
 
-  if (status === "loading") {
+  if (isLoading) {
     return <h1>Loading...</h1>;
   }
 
@@ -42,6 +47,4 @@ function App() {
       </table>
     </>
   )
-}
-
-export default App
+};
