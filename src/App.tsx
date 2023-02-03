@@ -8,21 +8,23 @@ export const App = () => {
   const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
 
+  const getQueryKey = (page: number) => [
+    "contributors",
+    {
+      per_page: perPage,
+      page,
+    }
+  ];
+
   useEffect(() => {
     queryClient.prefetchQuery(
-      [
-        "contributors",
-        {
-          per_page: perPage,
-          page: page + 1,
-        }
-      ],
+      getQueryKey(page + 1),
       // fetchContributors,
     );
   }, [page, queryClient]);
 
   const { isLoading, error, data, isPreviousData } = useQuery(
-    ["contributors", { per_page: perPage, page }],
+    getQueryKey(page),
     // fetchContributors,
     {
       staleTime: 5_000,
