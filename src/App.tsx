@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useIsFetching, useQuery } from 'react-query';
+import { useEffect, useState } from 'react';
+import { useIsFetching, useQuery, useQueryClient } from 'react-query';
 import './App.css';
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -28,6 +28,20 @@ const perPage = 5;
 
 export const App = () => {
   const [page, setPage] = useState(1);
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.prefetchQuery(
+      [
+        "contributors",
+        {
+          per_page: perPage,
+          page: page + 1,
+        }
+      ],
+      fetchContributors,
+    );
+  }, [page, queryClient]);
 
   const { isLoading, error, data, isPreviousData } = useQuery(
     ["contributors", { per_page: perPage, page }],
