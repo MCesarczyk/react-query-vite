@@ -29,11 +29,12 @@ const perPage = 5;
 export const App = () => {
   const [page, setPage] = useState(1);
 
-  const { isLoading, error, data } = useQuery(
+  const { isLoading, error, data, isPreviousData } = useQuery(
     ["contributors", { per_page: perPage, page }],
     fetchContributors,
     {
       staleTime: 5_000,
+      keepPreviousData: true,
     }
   );
 
@@ -61,7 +62,10 @@ export const App = () => {
             <th>Commitment</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody style={{
+          opacity: isPreviousData ? "0.5" : "1",
+          transition: "opacity 0.5s"
+        }}>
           {contributors?.map(contributor => (
             <tr key={contributor.id}>
               <td>{contributor.login}</td>
