@@ -14,15 +14,20 @@ const fetchContributors = async () => {
 };
 
 export const App = () => {
-  const { isLoading, status, error, data } = useQuery("contributors", fetchContributors);
+  const { isLoading, error, data } = useQuery("contributors",
+    fetchContributors,
+    {
+      staleTime: 5_000,
+    }
+  );
 
-  const contributors = !data ? undefined : data as any[];
+  const contributors: any[] = data || [];
 
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
 
-  if (status === "error") {
+  if (error) {
     return <h1>{`Error: ${(error as Error).message}`}</h1>;
   }
 
@@ -46,5 +51,5 @@ export const App = () => {
         </tbody>
       </table>
     </>
-  )
+  );
 };
