@@ -12,7 +12,7 @@ const fetchContributors = async ({ queryKey }: any) => {
   });
 
   const response = await fetch(
-    `https://api.github.com/repos/tannerlinsley/react-query/contributors?${params}`
+    `https://api.githube.com/repos/tannerlinsley/react-query/contributors?${params}`
   );
 
   if (!response.ok) {
