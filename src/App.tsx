@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useIsFetching, useQuery } from 'react-query';
 import './App.css';
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -12,10 +12,10 @@ const fetchContributors = async ({ queryKey }: any) => {
   });
 
   const response = await fetch(
-    `https://api.github.com/repos/tannerlinsley/react-query/contributorsz?${params}`
+    `https://api.github.com/repos/tannerlinsley/react-query/contributors?${params}`
   );
-  
-  if(!response.ok){
+
+  if (!response.ok) {
     throw new Error("Failed to load data...");
   }
 
@@ -35,6 +35,8 @@ export const App = () => {
 
   const contributors: any[] = data || [];
 
+  const isFetching = useIsFetching();
+
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
@@ -46,6 +48,7 @@ export const App = () => {
   return (
     <>
       <h1>React Query contributors</h1>
+      <p>{isFetching ? "Fetching..." : "Ready"}</p>
       <table>
         <thead>
           <tr>
