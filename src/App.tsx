@@ -3,19 +3,26 @@ import './App.css';
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const fetchContributors = async () => {
+const fetchContributors = async (perPage: number) => {
   await wait(1_000);
+  const params = new URLSearchParams({
+    per_page: String(perPage),
+  });
+
 
   const response = await fetch(
-    "https://api.github.com/repos/tannerlinsley/react-query/contributors"
+    `https://api.github.com/repos/tannerlinsley/react-query/contributors?${params}`
   );
 
   return await response.json();
 };
 
+const perPage = 5;
+
 export const App = () => {
-  const { isLoading, error, data } = useQuery("contributors",
-    fetchContributors,
+  const { isLoading, error, data } = useQuery(
+    ["contributors", { per_page: perPage }],
+    () => fetchContributors(perPage),
     {
       staleTime: 5_000,
     }
