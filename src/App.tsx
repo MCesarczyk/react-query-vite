@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useIsFetching, useQuery } from 'react-query';
 import './App.css';
 
@@ -5,14 +6,15 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const fetchContributors = async ({ queryKey }: any) => {
   await wait(1_000);
-  const [, { per_page }] = queryKey;
+  const [, { per_page, page }] = queryKey;
 
   const params = new URLSearchParams({
     per_page,
+    page,
   });
 
   const response = await fetch(
-    `https://api.githube.com/repos/tannerlinsley/react-query/contributors?${params}`
+    `https://api.github.com/repos/tannerlinsley/react-query/contributors?${params}`
   );
 
   if (!response.ok) {
@@ -25,8 +27,10 @@ const fetchContributors = async ({ queryKey }: any) => {
 const perPage = 5;
 
 export const App = () => {
+  const [page, setPage] = useState(1);
+
   const { isLoading, error, data } = useQuery(
-    ["contributors", { per_page: perPage }],
+    ["contributors", { per_page: perPage, page }],
     fetchContributors,
     {
       staleTime: 5_000,
@@ -49,6 +53,7 @@ export const App = () => {
     <>
       <h1>React Query contributors</h1>
       <p>{isFetching ? "Fetching..." : "Ready"}</p>
+      <p>Page{page}</p>
       <table>
         <thead>
           <tr>
@@ -65,6 +70,7 @@ export const App = () => {
           ))}
         </tbody>
       </table>
+      <button onClick={() => setPage(page => page + 1)}>Next page</button>
     </>
   );
 };
