@@ -12,8 +12,12 @@ const fetchContributors = async ({ queryKey }: any) => {
   });
 
   const response = await fetch(
-    `https://api.github.com/repos/tannerlinsley/react-query/contributors?${params}`
+    `https://api.github.com/repos/tannerlinsley/react-query/contributorsz?${params}`
   );
+  
+  if(!response.ok){
+    throw new Error("Failed to load data...");
+  }
 
   return await response.json();
 };
